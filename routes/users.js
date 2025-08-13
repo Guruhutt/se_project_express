@@ -1,10 +1,10 @@
 const router = require('express').Router();
+const { getUsers,createUser } = require('../controllers/users');
 
-router.get("/users", (req, res) => {
-  res.status(200).json({
-    message: "Welcome to the API",
-    status: "success"
-  });
-});
+router.get("/", getUsers);
+
+router.get("/users/:id", ()=> console.log("GET user by ID"));
+
+router.post("/", createUser);
 
 module.exports = router;
