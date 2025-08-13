@@ -9,8 +9,7 @@ const BASE_PATH = `http://localhost:${PORT}`;
 mongoose.connect('mongodb://127.0.0.1:27017/wtwr_db').then(() => {
   console.log('Connected to DB');}).catch(console.error);
 
-app.use(express.json());
-app.use('/', indexRouter);
+
 
 app.use((req, res, next) => {
   req.user = {
@@ -18,6 +17,9 @@ app.use((req, res, next) => {
   };
   next();
 });
+
+app.use(express.json());
+app.use('/', indexRouter);
 
 module.exports.createClothingItem = (req, res) => {
   console.log(req.user._id);// _id will become accessible

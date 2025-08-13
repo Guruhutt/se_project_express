@@ -27,8 +27,8 @@ const createUser = (req, res) => {
 
 
 const getUser = (req, res) => {
-  const {UserID} = req.params;
-  User.findById(userID).orFail().then((user) =>res.status(200)).catch((err) => {
+  const {userID} = req.params;
+  User.findById(userID).orFail().then((user) =>res.status(200).send(user)).catch((err) => {
       console.error(err);
       if (err.name === 'CastError') {
         return res.status(BAD_REQUEST).send({ message: 'Bad Request' });
@@ -38,7 +38,7 @@ const getUser = (req, res) => {
 
       return res.status(BAD_REQUEST).send({ message: 'Bad Request' });
     });
-}
+};
 
 module.exports = {
   getUsers,createUser, getUser

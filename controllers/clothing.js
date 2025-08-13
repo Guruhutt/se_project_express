@@ -10,7 +10,7 @@ const getClothingItems = (req, res) => {
       console.error(err);
       return res.status(INTERNAL_SERVER_ERROR).send({ message: 'Internal Server Error' });
     });
-}
+};
 
 const createClothingItem = (req, res) => {
   const { name, size, color } = req.body;
@@ -26,20 +26,6 @@ const createClothingItem = (req, res) => {
       return res.status(BAD_REQUEST).send({ message: 'Bad Request' });
     });
 };
-
-const getClothingItem = (req, res) => {
-  const { id } = req.params;
-  Clothing.findById(id).orFail().then((item) => res.status(200).send(item))
-    .catch((err) => {
-      console.error(err);
-      if (err.name === 'CastError') {
-        return res.status(BAD_REQUEST).send({ message: 'Bad Request' });
-      } else if (err.name === 'DocumentNotFoundError') {
-        return res.status(NOT_FOUND).send({ message: 'Not Found' });
-      }
-      return res.status(INTERNAL_SERVER_ERROR).send({ message: 'Internal Server Error' });
-    });
-}
 
 const deleteClothingItem = (req, res) => {
   const { itemID } = req.params;
@@ -57,8 +43,8 @@ const deleteClothingItem = (req, res) => {
       }
       return res.status(INTERNAL_SERVER_ERROR).send({ message: 'Internal Server Error' });
     });
-}
+};
 
 module.exports = {
-  getClothingItems,createClothingItem, getClothingItem,deleteClothingItem
+  getClothingItems,createClothingItem,deleteClothingItem
 };
