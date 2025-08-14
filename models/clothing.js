@@ -1,13 +1,12 @@
-const e = require('express');
 const mongoose = require('mongoose');
 const validator = require('validator');
 
 const clothingItemSchema = new mongoose.Schema({
-  name: { 
-    type: String, 
-    required: true, 
-    minlength: 2, 
-    maxlength: 30, 
+  name: {
+    type: String,
+    required: true,
+    minlength: 2,
+    maxlength: 30,
   },
   weather: {
     type: String,
@@ -23,13 +22,15 @@ const clothingItemSchema = new mongoose.Schema({
        message: 'You must enter a valid URL',
        },
 }, owner: {
-    type: String,
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'user',
      required: true,
-}, likes: {
-    type: String,
-     required: true,
-}, createdAt: {
-    type: String,
+}, likes: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'user',
+    default: [],
+}], createdAt: {
+    type: Date.now,
      required: true,
 },
 });

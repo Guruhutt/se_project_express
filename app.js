@@ -25,6 +25,10 @@ module.exports.createClothingItem = (req, res) => {
   console.log(req.user._id);// _id will become accessible
 };
 
+app.use((req, res) => {
+  res.status(404).json({ message: "Requested resource not found" });
+});
+
 app.listen(PORT, () => {
   console.log('Link to the server:');
   console.log(BASE_PATH);

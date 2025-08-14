@@ -1,6 +1,5 @@
-const { get } = require('mongoose');
 const User = require('../models/user');
-const { BAD_REQUEST,NOT_FOUND,INTERNAL_SERVER_ERROR } = require("../utils/errors");
+const { BAD_REQUEST, NOT_FOUND, INTERNAL_SERVER_ERROR } = require("../utils/errors");
 
 const getUsers =  (req, res) => {
   User.find({}).orFail()
@@ -41,5 +40,5 @@ const getUser = (req, res) => {
 };
 
 module.exports = {
-  getUsers,createUser, getUser
+  getUsers, createUser, getUser
 };
