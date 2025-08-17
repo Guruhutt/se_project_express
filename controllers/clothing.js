@@ -1,10 +1,10 @@
-const express = require('express');
+
 const Clothing = require('../models/clothing');
 const { BAD_REQUEST, NOT_FOUND, INTERNAL_SERVER_ERROR } = require("../utils/errors");
 
 
 const getClothingItems = (req, res) => {
-  Clothing.find({}).orFail()
+  Clothing.find({})
     .then(items => res.send(items))
     .catch((err) => {
       console.error(err);
@@ -13,17 +13,18 @@ const getClothingItems = (req, res) => {
 };
 
 const createClothingItem = (req, res) => {
-  const {  weather, imageUrl, owner } = req.body;
+  const {  weather, imageUrl,name } = req.body;
+  const owner = req.user._id; // Use the user ID from the request
   const clothingItem = new Clothing({ weather, imageUrl, owner });
 
-  Clothing.create({ weather, imageUrl, owner })
+  Clothing.create({ weather, imageUrl, owner,name })
     .then((item) => res.status(201).send(item))
     .catch((err) => {
       if (err.name === 'ValidationError') {
         return res.status(BAD_REQUEST).send({ message: 'Bad Request' });
       }
       console.error(err);
-      return res.status(BAD_REQUEST).send({ message: 'Bad Request' });
+      return res.status(INTERNAL_SERVER_ERROR ).send({ message: 'Bad Request' });
     });
 };
 
@@ -34,12 +35,14 @@ const deleteClothingItem = (req, res) => {
       if (!item) {
         return res.status(NOT_FOUND).send({ message: 'Item not found' });
       }
-      res.status(200).send({ message: 'Item deleted successfully' });
+      return res.status(200).send({ message: 'Item deleted successfully' });
     })
     .catch((err) => {
       console.error(err);
       if (err.name === 'CastError') {
         return res.status(BAD_REQUEST).send({ message: 'Bad Request' });
+      }if (err.name === 'DocumentNotFoundError') {
+        return res.status(NOT_FOUND).send({ message: 'Item not found' });
       }
       return res.status(INTERNAL_SERVER_ERROR).send({ message: 'Internal Server Error' });
     });
@@ -59,6 +62,8 @@ const likeClothingItem = (req, res) => {
       console.error(err);
       if (err.name === 'ValidationError' || err.name === 'CastError') {
         return res.status(BAD_REQUEST).send({ message: 'Bad Request' });
+      }if (err.name === 'DocumentNotFoundError') {
+        return res.status(NOT_FOUND).send({ message: 'Item not found' });
       }
       return res.status(INTERNAL_SERVER_ERROR).send({ message: 'Internal Server Error' });
     });
@@ -78,6 +83,8 @@ const dislikeClothingItem = (req, res) => {
       console.error(err);
       if (err.name === 'ValidationError' || err.name === 'CastError') {
         return res.status(BAD_REQUEST).send({ message: 'Bad Request' });
+      }if (err.name === 'DocumentNotFoundError') {
+        return res.status(NOT_FOUND).send({ message: 'Item not found' });
       }
       return res.status(INTERNAL_SERVER_ERROR).send({ message: 'Internal Server Error' });
     }
