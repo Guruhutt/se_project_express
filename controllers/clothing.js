@@ -15,7 +15,6 @@ const getClothingItems = (req, res) => {
 const createClothingItem = (req, res) => {
   const {  weather, imageUrl,name } = req.body;
   const owner = req.user._id; // Use the user ID from the request
-  const clothingItem = new Clothing({ weather, imageUrl, owner });
 
   Clothing.create({ weather, imageUrl, owner,name })
     .then((item) => res.status(201).send(item))

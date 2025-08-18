@@ -10,7 +10,6 @@ const getUsers =  (req, res) => {
 
 const createUser = (req, res) => {
   const { name, avatar } = req.body;
-  const user = new User({ name, avatar });
 
   User.create({name, avatar})
     .then((user) => res.status(201).send(user))
