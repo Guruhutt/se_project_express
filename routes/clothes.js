@@ -4,7 +4,7 @@ const {getClothingItems, createClothingItem, deleteClothingItem, likeClothingIte
 router.get("/", getClothingItems);
 router.post("/", createClothingItem);
 router.delete("/:itemID", deleteClothingItem);
-router.put("/:itemID/like", likeClothingItem);
-router.delete("/:itemID/like", dislikeClothingItem);
+router.put("/likes", likeClothingItem);
+router.delete("/likes", dislikeClothingItem);
 
 module.exports = router;
