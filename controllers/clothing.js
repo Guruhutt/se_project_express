@@ -1,6 +1,8 @@
 
+const clothing = require('../models/clothing');
 const Clothing = require('../models/clothing');
-const { BAD_REQUEST, NOT_FOUND, INTERNAL_SERVER_ERROR } = require("../utils/errors");
+const user = require('../models/user');
+const { BAD_REQUEST, NOT_FOUND, INTERNAL_SERVER_ERROR, FORBIDDEN} = require("../utils/errors");
 
 
 const getClothingItems = (req, res) => {
@@ -29,13 +31,18 @@ const createClothingItem = (req, res) => {
 
 const deleteClothingItem = (req, res) => {
   const { itemID } = req.params;
-  Clothing.findByIdAndDelete(itemID).orFail()
-    .then((item) => {
-      if (!item) {
+  const  userID  = req.user._id;
+  Clothing.findById(itemID).orFail().then((item) => {
+    if (item.owner !== userID) {
+      return res.status(FORBIDDEN).send({ message: 'Forbidden: You can only delete your own items' });
+    }
+    if (!item) {
         return res.status(NOT_FOUND).send({ message: 'Item not found' });
-      }
-      return res.status(200).send({ message: 'Item deleted successfully' });
-    })
+      }else { Clothing.findByIdAndRemove(itemID).orFail().then(() => {return res.send({ message: 'Item deleted successfully' });}).catch((err) => {
+        console.error(err);
+        return res.status(INTERNAL_SERVER_ERROR).send({ message: 'Internal Server Error' });
+      });}
+  })
     .catch((err) => {
       console.error(err);
       if (err.name === 'CastError') {
