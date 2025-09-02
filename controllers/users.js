@@ -18,6 +18,7 @@ const login = (req, res) => {
       const token = jwt.sign({ _id: user._id }, JWT_SECRET, {
         expiresIn: "7d",
       });
+      return res.send({ token });
     })
     .catch((err) => {
       console.error(err);
@@ -31,7 +32,10 @@ const createUser = (req, res) => {
   const { name, avatar, password, email } = req.body;
    bcrypt.hash(password, 10).then((hash) =>User.create({name, avatar , email,
       password: hash}))
-    .then((user) => res.status(201).send(user))
+    .then((user) => {
+      const userObj = user.toObject();
+      delete userObj.password;
+      res.status(201).send(user)})
     .catch((err) => {
       if (err.name === 'ValidationError') {
         return res.status(BAD_REQUEST).send({ message: 'Bad Request' });
@@ -45,7 +49,7 @@ const createUser = (req, res) => {
 };
 
 const getCurrentUser = (req, res) => {
-  const {userMe} = req.user;
+  const {userMe} = req.user._id;
   User.findById(userMe).orFail().then((user) =>res.status(200).send(user)).catch((err) => {
       console.error(err);
       if (err.name === 'CastError') {
@@ -59,7 +63,7 @@ const getCurrentUser = (req, res) => {
 
 const updateUser = (req, res) => {
   const { name, avatar } = req.body;
-  const { userMe } = req.user;
+  const { userMe } = req.user._id;
 
   User.findByIdAndUpdate(userMe, { name, avatar }, { new: true, runValidators: true }).orFail()
     .then((user) => res.status(200).send(user))

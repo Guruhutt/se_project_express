@@ -33,12 +33,9 @@ const deleteClothingItem = (req, res) => {
   const { itemID } = req.params;
   const  userID  = req.user._id;
   Clothing.findById(itemID).orFail().then((item) => {
-    if (item.owner !== userID) {
+    if (item.owner.equals(userID) === false) {
       return res.status(FORBIDDEN).send({ message: 'Forbidden: You can only delete your own items' });
-    }
-    if (!item) {
-        return res.status(NOT_FOUND).send({ message: 'Item not found' });
-      }else { Clothing.findByIdAndRemove(itemID).orFail().then(() => {return res.send({ message: 'Item deleted successfully' });}).catch((err) => {
+    }else { Clothing.findByIdAndRemove(itemID).orFail().then(() => {return res.send({ message: 'Item deleted successfully' });}).catch((err) => {
         console.error(err);
         return res.status(INTERNAL_SERVER_ERROR).send({ message: 'Internal Server Error' });
       });}
