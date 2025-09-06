@@ -1,8 +1,10 @@
-const User = require('../models/user');
-const { BAD_REQUEST, NOT_FOUND, INTERNAL_SERVER_ERROR, CONFLICT} = require("../utils/errors");
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const JWT_SECRET = process.env.JWT_SECRET;
+const User = require('../models/user');
+const { BAD_REQUEST, NOT_FOUND, INTERNAL_SERVER_ERROR, CONFLICT, UNAUTHORIZED} = require("../utils/errors");
+
+
+const {JWT_SECRET}  = process.env;
 
 const getUsers =  (req, res) => {
   User.find({})
@@ -13,6 +15,10 @@ const getUsers =  (req, res) => {
 const login = (req, res) => {
   const { email, password } = req.body;
 
+  if (!email || !password) {
+    return res.status(BAD_REQUEST).send({message: 'Email and password are required' });
+  }
+
   return User.findUserByCredentials(email, password)
     .then((user) => {
       const token = jwt.sign({ _id: user._id }, JWT_SECRET, {
@@ -21,10 +27,10 @@ const login = (req, res) => {
       return res.send({ token });
     })
     .catch((err) => {
-      console.error(err);
-      res
-        .status(401)
-        .send({ message: err.message });
+      if (err.message === 'Incorrect email or password') {
+        return res.status(UNAUTHORIZED).send({ message: 'Incorrect email or password' });
+      }
+      return res.status(INTERNAL_SERVER_ERROR).send({ message: 'Internal Server Error' });
     });
 };
 
@@ -49,8 +55,8 @@ const createUser = (req, res) => {
 };
 
 const getCurrentUser = (req, res) => {
-  const {userMe} = req.user._id;
-  User.findById(userMe).orFail().then((user) =>res.status(200).send(user)).catch((err) => {
+  const {_id} = req.user;
+  User.findById(_id).orFail().then((user) =>res.status(200).send(user)).catch((err) => {
       console.error(err);
       if (err.name === 'CastError') {
         return res.status(BAD_REQUEST).send({ message: 'Bad Request' });
@@ -63,9 +69,9 @@ const getCurrentUser = (req, res) => {
 
 const updateUser = (req, res) => {
   const { name, avatar } = req.body;
-  const { userMe } = req.user._id;
+  const { _id } = req.user;
 
-  User.findByIdAndUpdate(userMe, { name, avatar }, { new: true, runValidators: true }).orFail()
+  User.findByIdAndUpdate(_id, { name, avatar }, { new: true, runValidators: true }).orFail()
     .then((user) => res.status(200).send(user))
     .catch((err) => {
       console.error(err);

@@ -1,7 +1,4 @@
-
-const clothing = require('../models/clothing');
 const Clothing = require('../models/clothing');
-const user = require('../models/user');
 const { BAD_REQUEST, NOT_FOUND, INTERNAL_SERVER_ERROR, FORBIDDEN} = require("../utils/errors");
 
 
@@ -35,16 +32,15 @@ const deleteClothingItem = (req, res) => {
   Clothing.findById(itemID).orFail().then((item) => {
     if (item.owner.equals(userID) === false) {
       return res.status(FORBIDDEN).send({ message: 'Forbidden: You can only delete your own items' });
-    }else { Clothing.findByIdAndRemove(itemID).orFail().then(() => {return res.send({ message: 'Item deleted successfully' });}).catch((err) => {
-        console.error(err);
-        return res.status(INTERNAL_SERVER_ERROR).send({ message: 'Internal Server Error' });
-      });}
+    }
+      return Clothing.findByIdAndRemove(itemID).then(() => res.send({ message: 'Item deleted successfully' }));
   })
     .catch((err) => {
       console.error(err);
       if (err.name === 'CastError') {
         return res.status(BAD_REQUEST).send({ message: 'Bad Request' });
-      }if (err.name === 'DocumentNotFoundError') {
+      }
+      if (err.name === 'DocumentNotFoundError') {
         return res.status(NOT_FOUND).send({ message: 'Item not found' });
       }
       return res.status(INTERNAL_SERVER_ERROR).send({ message: 'Internal Server Error' });
