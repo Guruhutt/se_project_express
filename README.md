@@ -1,3 +1,3 @@
-# Project Express
+Express
 
-Project express is a basic server made to collect user data and clothing data it uses node.js and express to accomplish this task made by Aaron young
+Project express is a basic server that allows users to make an account and log into it while also collecting user data and clothing data and storeing it so it can be called on upon log in \ it uses node.js and express to accomplish this task made by Aaron young

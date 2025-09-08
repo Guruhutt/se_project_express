@@ -50,7 +50,7 @@ const createUser = (req, res) => {
         return res.status(CONFLICT).send({ message: 'Email already exists' });
       }
       console.error(err);
-      return res.status(INTERNAL_SERVER_ERROR).send({ message: 'Bad Request' });
+      return res.status(INTERNAL_SERVER_ERROR).send({ message: 'Internal Server Error' });
     });
 };
 
@@ -63,7 +63,7 @@ const getCurrentUser = (req, res) => {
       } if (err.name === 'DocumentNotFoundError') {
         return res.status(NOT_FOUND).send({ message: 'Not Found' });
       }
-      return res.status(INTERNAL_SERVER_ERROR).send({ message: 'Bad Request' });
+      return res.status(INTERNAL_SERVER_ERROR).send({ message: 'Internal Server Error' });
     });
 };
 
@@ -80,7 +80,7 @@ const updateUser = (req, res) => {
       } if (err.name === 'DocumentNotFoundError') {
         return res.status(NOT_FOUND).send({ message: 'Not Found' });
       }
-      return res.status(INTERNAL_SERVER_ERROR).send({ message: 'Bad Request' });
+      return res.status(INTERNAL_SERVER_ERROR).send({ message: 'Internal Server Error' });
     });
 };
 

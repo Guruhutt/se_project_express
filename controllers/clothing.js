@@ -22,7 +22,7 @@ const createClothingItem = (req, res) => {
         return res.status(BAD_REQUEST).send({ message: 'Bad Request' });
       }
       console.error(err);
-      return res.status(INTERNAL_SERVER_ERROR ).send({ message: 'Bad Request' });
+      return res.status(INTERNAL_SERVER_ERROR ).send({ message: 'Internal Server Error' });
     });
 };
 
