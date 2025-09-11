@@ -33,7 +33,7 @@ const deleteClothingItem = (req, res) => {
     if (item.owner.equals(userID) === false) {
       return res.status(FORBIDDEN).send({ message: 'Forbidden: You can only delete your own items' });
     }
-      return Clothing.findByIdAndRemove(itemID).then(() => res.send({ message: 'Item deleted successfully' }));
+      return Clothing.findByIdAndDelete(itemID).then(() => res.send({ message: 'Item deleted successfully' }));
   })
     .catch((err) => {
       console.error(err);

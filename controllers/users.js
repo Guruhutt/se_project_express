@@ -4,7 +4,7 @@ const User = require('../models/user');
 const { BAD_REQUEST, NOT_FOUND, INTERNAL_SERVER_ERROR, CONFLICT, UNAUTHORIZED} = require("../utils/errors");
 
 
-const {JWT_SECRET}  = process.env;
+const {JWT_SECRET  = "dev-secret" }  = process.env;
 
 const getUsers =  (req, res) => {
   User.find({})
@@ -41,7 +41,7 @@ const createUser = (req, res) => {
     .then((user) => {
       const userObj = user.toObject();
       delete userObj.password;
-      res.status(201).send(user)})
+      res.status(201).send(userObj)})
     .catch((err) => {
       if (err.name === 'ValidationError') {
         return res.status(BAD_REQUEST).send({ message: 'Bad Request' });
