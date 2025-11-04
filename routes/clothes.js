@@ -43,7 +43,7 @@ router.put(
   auth,
   celebrate({
     params: Joi.object().keys({
-      itemId: Joi.string().alphanum().length(24),
+      itemID: Joi.string().alphanum().length(24),
     }),
     query: Joi.object().keys({}),
   }),
@@ -55,7 +55,7 @@ router.delete(
   auth,
   celebrate({
     params: Joi.object().keys({
-      itemId: Joi.string().alphanum().length(24),
+      itemID: Joi.string().alphanum().length(24),
     }),
     query: Joi.object().keys({}),
   }),
