@@ -20,9 +20,8 @@ mongoose
 
 app.use(express.json());
 app.use(cors());
-app.use("/", indexRouter);
 app.use(requestLogger);
-app.use(routes);
+app.use("/", indexRouter);
 
 app.use(errorLogger);
 
