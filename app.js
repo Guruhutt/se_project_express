@@ -3,7 +3,7 @@ const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
 const indexRouter = require("./routes/index");
-const { requestLogger, errorLogger } = require("./middlewares/logger");
+const { requestLogger, errorLogger } = require("./middleware/logger");
 const { errors } = require("celebrate");
 const { NOT_FOUND, INTERNAL_SERVER_ERROR } = require("./utils/errors");
 
