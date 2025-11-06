@@ -2,9 +2,9 @@ require("dotenv").config();
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
+const { errors } = require("celebrate");
 const indexRouter = require("./routes/index");
 const { requestLogger, errorLogger } = require("./middleware/logger");
-const { errors } = require("celebrate");
 const { NOT_FOUND, INTERNAL_SERVER_ERROR } = require("./utils/errors");
 
 const app = express();
@@ -34,7 +34,7 @@ app.use((req, res) => {
 });
 
 // then centralized error handler
-app.use((err, req, res, next) => {
+app.use((err, req, res) => {
   console.error(err);
   return res
     .status(INTERNAL_SERVER_ERROR)

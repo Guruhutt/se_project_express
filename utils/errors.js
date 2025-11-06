@@ -1,3 +1,4 @@
+/* eslint-disable max-classes-per-file */
 const UNAUTHORIZED = 401;
 const BAD_REQUEST = 400;
 const CONFLICT = 409;

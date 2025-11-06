@@ -1,5 +1,5 @@
-const { JWT_SECRET } = require("../config");
 const jwt = require("jsonwebtoken");
+const { JWT_SECRET } = require("../config");
 const { UNAUTHORIZED } = require("../utils/errors");
 
 const handleAuthError = (res) => {
@@ -18,7 +18,6 @@ module.exports = (req, res, next) => {
   const token = extractBearerToken(authorization);
   let payload;
 
-  const { JWT_SECRET = "dev-secret" } = process.env;
   try {
     payload = jwt.verify(token, JWT_SECRET);
   } catch (err) {
