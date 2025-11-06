@@ -1,5 +1,9 @@
 const router = require("express").Router();
-const { celebrate, Joi } = require("celebrate");
+const {
+  validateClothingItem,
+  validateItemId,
+} = require("../middleware/Validation");
+
 const {
   getClothingItems,
   createClothingItem,
@@ -13,53 +17,12 @@ router.get("/", getClothingItems);
 
 router.use(auth);
 
-router.post(
-  "/",
-  auth,
-  celebrate({
-    body: Joi.object().keys({
-      name: Joi.string().required().min(2).max(30),
-      imageUrl: Joi.string().required().uri(),
-      weather: Joi.string().valid("hot", "warm", "cold").required(),
-    }),
-  }),
-  createClothingItem
-);
+router.post("/", auth, validateClothingItem, createClothingItem);
 
-router.delete(
-  "/:itemID",
-  auth,
-  celebrate({
-    params: Joi.object().keys({
-      itemID: Joi.string().alphanum().length(24),
-    }),
-    query: Joi.object().keys({}),
-  }),
-  deleteClothingItem
-);
+router.delete("/:itemID", auth, validateItemId, deleteClothingItem);
 
-router.put(
-  "/:itemID/likes",
-  auth,
-  celebrate({
-    params: Joi.object().keys({
-      itemID: Joi.string().alphanum().length(24),
-    }),
-    query: Joi.object().keys({}),
-  }),
-  likeClothingItem
-);
+router.put("/:itemID/likes", auth, validateItemId, likeClothingItem);
 
-router.delete(
-  "/:itemID/likes",
-  auth,
-  celebrate({
-    params: Joi.object().keys({
-      itemID: Joi.string().alphanum().length(24),
-    }),
-    query: Joi.object().keys({}),
-  }),
-  dislikeClothingItem
-);
+router.delete("/:itemID/likes", auth, validateItemId, dislikeClothingItem);
 
 module.exports = router;

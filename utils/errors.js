@@ -3,46 +3,47 @@ const BAD_REQUEST = 400;
 const CONFLICT = 409;
 const NOT_FOUND = 404;
 const INTERNAL_SERVER_ERROR = 500;
+const FORBIDDEN_ERROR = 403;
 
 class NotFoundError extends Error {
   constructor(message) {
     super(message);
-    this.statusCode = 404;
+    this.statusCode = NOT_FOUND;
   }
 }
 
 class BadRequestError extends Error {
   constructor(message) {
     super(message);
-    this.statusCode = 400;
+    this.statusCode = BAD_REQUEST;
   }
 }
 
 class ConflictError extends Error {
   constructor(message) {
     super(message);
-    this.statusCode = 409;
+    this.statusCode = CONFLICT;
   }
 }
 
 class ForbiddenError extends Error {
   constructor(message) {
     super(message);
-    this.statusCode = 403;
+    this.statusCode = FORBIDDEN_ERROR;
   }
 }
 
 class InternalServerError extends Error {
   constructor(message) {
     super(message);
-    this.statusCode = 404;
+    this.statusCode = INTERNAL_SERVER_ERROR;
   }
 }
 
 class UnauthorizedError extends Error {
   constructor(message) {
     super(message);
-    this.statusCode = 401;
+    this.statusCode = UNAUTHORIZED;
   }
 }
 
@@ -53,9 +54,4 @@ module.exports = {
   InternalServerError,
   NotFoundError,
   UnauthorizedError,
-  UNAUTHORIZED,
-  BAD_REQUEST,
-  CONFLICT,
-  NOT_FOUND,
-  INTERNAL_SERVER_ERROR,
 };
