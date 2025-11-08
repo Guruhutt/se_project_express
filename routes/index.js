@@ -1,32 +1,15 @@
 const router = require("express").Router();
-const { celebrate, Joi } = require("celebrate");
+const {
+  validateUserSignin,
+  validateUserSignup,
+} = require("../middleware/Validation");
 const clothesRouter = require("./clothes");
 const { login, createUser } = require("../controllers/users");
 const auth = require("../middleware/auth");
 const userRouter = require("./users");
 
-router.post(
-  "/signin",
-  celebrate({
-    body: Joi.object().keys({
-      email: Joi.string().required().email(),
-      password: Joi.string().required(),
-    }),
-  }),
-  login
-);
-router.post(
-  "/signup",
-  celebrate({
-    body: Joi.object().keys({
-      email: Joi.string().required().email(),
-      password: Joi.string().required(),
-      name: Joi.string().required().min(2).max(30),
-      avatar: Joi.string().required().uri(),
-    }),
-  }),
-  createUser
-);
+router.post("/signin", validateUserSignin, login);
+router.post("/signup", validateUserSignup, createUser);
 
 router.use("/users", auth, userRouter);
 

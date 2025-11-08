@@ -38,8 +38,39 @@ const validateUserUpdate = celebrate({
   }),
 });
 
+const validateUserSignup = celebrate({
+  body: Joi.object().keys({
+    email: Joi.string().required().email().messages({
+      "string.email": "Invalid email format",
+    }),
+    password: Joi.string().required().messages({
+      "string.empty": "Password is required",
+    }),
+    name: Joi.string().required().min(2).max(30).messages({
+      "string.min": "Name must be at least 2 characters",
+      "string.max": "Name must be no more than 30 characters",
+    }),
+    avatar: Joi.string().required().custom(validateURL).messages({
+      "string.empty": "Avatar URL is required",
+    }),
+  }),
+});
+
+const validateUserSignin = celebrate({
+  body: Joi.object().keys({
+    email: Joi.string().required().email().messages({
+      "string.email": "Invalid email format",
+    }),
+    password: Joi.string().required().messages({
+      "string.empty": "Password is required",
+    }),
+  }),
+});
+
 module.exports = {
   validateClothingItem,
   validateItemId,
   validateUserUpdate,
+  validateUserSignup,
+  validateUserSignin,
 };
