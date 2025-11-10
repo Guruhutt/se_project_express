@@ -19,7 +19,14 @@ mongoose
   .catch(console.error);
 
 app.use(express.json());
-app.use(cors());
+app.use(
+  cors({
+    origin: [
+      "http://localhost:3000", // for local development
+      "https://www.wtwra.twilightparadox.com", // for production
+    ],
+  })
+);
 app.use(requestLogger);
 app.use("/", indexRouter);
 
