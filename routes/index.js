@@ -2,7 +2,7 @@ const router = require("express").Router();
 const {
   validateUserSignin,
   validateUserSignup,
-} = require("../middleware/Validation");
+} = require("../middleware/validation");
 const clothesRouter = require("./clothes");
 const { login, createUser } = require("../controllers/users");
 const auth = require("../middleware/auth");

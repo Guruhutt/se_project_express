@@ -2,7 +2,7 @@ const router = require("express").Router();
 const {
   validateClothingItem,
   validateItemId,
-} = require("../middleware/Validation");
+} = require("../middleware/validation");
 
 const {
   getClothingItems,

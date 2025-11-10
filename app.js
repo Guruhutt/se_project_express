@@ -21,10 +21,7 @@ mongoose
 app.use(express.json());
 app.use(
   cors({
-    origin: [
-      "http://localhost:3000", // for local development
-      "https://www.wtwra.twilightparadox.com", // for production
-    ],
+    origin: ["http://localhost:3000", "https://www.wtwra.twilightparadox.com"],
   })
 );
 app.use(requestLogger);
