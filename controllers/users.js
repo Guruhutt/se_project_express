@@ -4,12 +4,12 @@ const User = require("../models/user");
 const { BAD_REQUEST } = require("../utils/bad_request");
 const { NOT_FOUND } = require("../utils/not_found");
 const { INTERNAL_SERVER_ERROR } = require("../utils/internal_error");
-const { UnauthorizedError } = require("../errors/unauthorized_error");
-const { CONFLICT } = require("../utils/conflict_error");
+const { UnauthorizedError } = require("../utils/unauthorized");
+const { CONFLICT } = require("../utils/conflict");
 
 const { JWT_SECRET = "dev-secret" } = process.env;
 
-const getUsers = (req, res) => {
+const getUsers = (req, res, next) => {
   User.find({})
     .then((users) => res.send(users))
     .catch(() => {
@@ -21,7 +21,7 @@ const login = (req, res) => {
   const { email, password } = req.body;
 
   if (!email || !password) {
-    throw new BadRequestError("Email and password are required");
+    throw new BAD_REQUEST("Email and password are required");
   }
 
   return User.findUserByCredentials(email, password)
@@ -35,7 +35,7 @@ const login = (req, res) => {
       if (err.message === "Incorrect email or password") {
         throw new UnauthorizedError("Incorrect email or password");
       }
-      throw new InternalServerError("Internal Server Error");
+      throw new INTERNAL_SERVER_ERROR("Internal Server Error");
     });
 };
 

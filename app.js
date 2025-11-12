@@ -5,8 +5,8 @@ const cors = require("cors");
 const { errors } = require("celebrate");
 const indexRouter = require("./routes/index");
 const { requestLogger, errorLogger } = require("./middleware/logger");
-const { NOT_FOUND } = require("../utils/not_found");
-const { INTERNAL_SERVER_ERROR } = require("../utils/internal_error");
+const { NOT_FOUND } = require("./utils/not_found");
+const { INTERNAL_SERVER_ERROR } = require("./utils/internal_error");
 
 const app = express();
 const { PORT = 3001 } = process.env;
@@ -34,7 +34,7 @@ app.get("/crash-test", () => {
 
 app.use(requestLogger);
 app.use("/", indexRouter);
-app.use((req, res) => {
+app.use((next) => {
   next(new NOT_FOUND("Requested resource not found"));
 });
 
@@ -46,11 +46,9 @@ app.use(errors());
 // then 404 handler
 
 // then centralized error handler
-app.use((err, req, res) => {
+app.use((err, next) => {
   console.error(err);
-  return res
-    .status(INTERNAL_SERVER_ERROR)
-    .send({ message: "An error occurred on the server" });
+  next(new INTERNAL_SERVER_ERROR("An internal server error occurred"));
 });
 
 app.listen(PORT, () => {
