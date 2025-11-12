@@ -1,15 +1,11 @@
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const User = require("../models/user");
-const {
-  BAD_REQUEST,
-  BadRequestError,
-  NOT_FOUND,
-  INTERNAL_SERVER_ERROR,
-  CONFLICT,
-  UnauthorizedError,
-  InternalServerError,
-} = require("../utils/errors");
+const { BAD_REQUEST } = require("../utils/bad_request");
+const { NOT_FOUND } = require("../utils/not_found");
+const { INTERNAL_SERVER_ERROR } = require("../utils/internal_error");
+const { UnauthorizedError } = require("../errors/unauthorized_error");
+const { CONFLICT } = require("../utils/conflict_error");
 
 const { JWT_SECRET = "dev-secret" } = process.env;
 
@@ -17,7 +13,7 @@ const getUsers = (req, res) => {
   User.find({})
     .then((users) => res.send(users))
     .catch(() => {
-      throw new InternalServerError("Internal Server Error");
+      next(new INTERNAL_SERVER_ERROR("Internal Server Error"));
     });
 };
 

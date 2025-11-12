@@ -5,7 +5,8 @@ const cors = require("cors");
 const { errors } = require("celebrate");
 const indexRouter = require("./routes/index");
 const { requestLogger, errorLogger } = require("./middleware/logger");
-const { NOT_FOUND, INTERNAL_SERVER_ERROR } = require("./utils/errors");
+const { NOT_FOUND } = require("../utils/not_found");
+const { INTERNAL_SERVER_ERROR } = require("../utils/internal_error");
 
 const app = express();
 const { PORT = 3001 } = process.env;
@@ -24,8 +25,18 @@ app.use(
     origin: ["http://localhost:3000", "https://www.wtwra.twilightparadox.com"],
   })
 );
+
+app.get("/crash-test", () => {
+  setTimeout(() => {
+    throw new Error("Server will crash now");
+  }, 0);
+});
+
 app.use(requestLogger);
 app.use("/", indexRouter);
+app.use((req, res) => {
+  next(new NOT_FOUND("Requested resource not found"));
+});
 
 app.use(errorLogger);
 
@@ -33,9 +44,6 @@ app.use(errorLogger);
 app.use(errors());
 
 // then 404 handler
-app.use((req, res) => {
-  res.status(NOT_FOUND).json({ message: "Requested resource not found" });
-});
 
 // then centralized error handler
 app.use((err, req, res) => {

@@ -1,19 +1,14 @@
 const Clothing = require("../models/clothing");
-const {
-  BAD_REQUEST,
-  NOT_FOUND,
-  INTERNAL_SERVER_ERROR,
-  FORBIDDEN,
-} = require("../utils/errors");
+const { BAD_REQUEST } = require("../utils/bad_request");
+const { NOT_FOUND } = require("../utils/not_found");
+const { INTERNAL_SERVER_ERROR } = require("../utils/internal_error");
+const { FORBIDDEN } = require("../utils/forbidden_error");
 
 const getClothingItems = (req, res) => {
   Clothing.find({})
     .then((items) => res.send(items))
-    .catch((err) => {
-      console.error(err);
-      return res
-        .status(INTERNAL_SERVER_ERROR)
-        .send({ message: "Internal Server Error" });
+    .catch(() => {
+      next(new INTERNAL_SERVER_ERROR("Internal Server Error"));
     });
 };
 
@@ -28,9 +23,7 @@ const createClothingItem = (req, res) => {
         return res.status(BAD_REQUEST).send({ message: "Bad Request" });
       }
       console.error(err);
-      return res
-        .status(INTERNAL_SERVER_ERROR)
-        .send({ message: "Internal Server Error" });
+      next(new INTERNAL_SERVER_ERROR("Internal Server Error"));
     });
 };
 
