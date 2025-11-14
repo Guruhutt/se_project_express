@@ -1,11 +1,11 @@
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const User = require("../models/user");
-const { BAD_REQUEST } = require("../utils/bad_request");
-const { NOT_FOUND } = require("../utils/not_found");
-const { INTERNAL_SERVER_ERROR } = require("../utils/internal_error");
-const { UnauthorizedError } = require("../utils/unauthorized");
-const { CONFLICT } = require("../utils/conflict");
+const BAD_REQUEST = require("../utils/bad_request");
+const NOT_FOUND = require("../utils/not_found");
+const INTERNAL_SERVER_ERROR = require("../utils/internal_error");
+const UnauthorizedError = require("../utils/unauthorized");
+const CONFLICT = require("../utils/conflict");
 
 const { JWT_SECRET = "dev-secret" } = process.env;
 
@@ -17,11 +17,11 @@ const getUsers = (req, res, next) => {
     });
 };
 
-const login = (req, res) => {
+const login = (req, res, next) => {
   const { email, password } = req.body;
 
   if (!email || !password) {
-    throw new BAD_REQUEST("Email and password are required");
+    return next(new BAD_REQUEST("Email and password are required"));
   }
 
   return User.findUserByCredentials(email, password)
@@ -33,13 +33,13 @@ const login = (req, res) => {
     })
     .catch((err) => {
       if (err.message === "Incorrect email or password") {
-        throw new UnauthorizedError("Incorrect email or password");
+        return next(new UnauthorizedError("Incorrect email or password"));
       }
-      throw new INTERNAL_SERVER_ERROR("Internal Server Error");
+      return next(new INTERNAL_SERVER_ERROR("Internal Server Error"));
     });
 };
 
-const createUser = (req, res) => {
+const createUser = (req, res, next) => {
   const { name, avatar, password, email } = req.body;
   bcrypt
     .hash(password, 10)
@@ -51,19 +51,17 @@ const createUser = (req, res) => {
     })
     .catch((err) => {
       if (err.name === "ValidationError") {
-        return res.status(BAD_REQUEST).send({ message: "Bad Request" });
+        return next(new BAD_REQUEST("Bad Request"));
       }
       if (err.code === 11000) {
-        return res.status(CONFLICT).send({ message: "Email already exists" });
+        return next(new CONFLICT("User with this email already exists"));
       }
       console.error(err);
-      return res
-        .status(INTERNAL_SERVER_ERROR)
-        .send({ message: "Internal Server Error" });
+      return next(new INTERNAL_SERVER_ERROR("Internal Server Error"));
     });
 };
 
-const getCurrentUser = (req, res) => {
+const getCurrentUser = (req, res, next) => {
   const { _id } = req.user;
   User.findById(_id)
     .orFail()
@@ -71,18 +69,16 @@ const getCurrentUser = (req, res) => {
     .catch((err) => {
       console.error(err);
       if (err.name === "CastError") {
-        return res.status(BAD_REQUEST).send({ message: "Bad Request" });
+        return next(new BAD_REQUEST("Bad Request"));
       }
       if (err.name === "DocumentNotFoundError") {
-        return res.status(NOT_FOUND).send({ message: "Not Found" });
+        return next(new NOT_FOUND("User not found"));
       }
-      return res
-        .status(INTERNAL_SERVER_ERROR)
-        .send({ message: "Internal Server Error" });
+      return next(new INTERNAL_SERVER_ERROR("Internal Server Error"));
     });
 };
 
-const updateUser = (req, res) => {
+const updateUser = (req, res, next) => {
   const { name, avatar } = req.body;
   const { _id } = req.user;
 
@@ -96,14 +92,12 @@ const updateUser = (req, res) => {
     .catch((err) => {
       console.error(err);
       if (err.name === "CastError") {
-        return res.status(BAD_REQUEST).send({ message: "Bad Request" });
+        return next(new BAD_REQUEST("Bad Request"));
       }
       if (err.name === "DocumentNotFoundError") {
-        return res.status(NOT_FOUND).send({ message: "Not Found" });
+        return next(new NOT_FOUND("User not found"));
       }
-      return res
-        .status(INTERNAL_SERVER_ERROR)
-        .send({ message: "Internal Server Error" });
+      return next(new INTERNAL_SERVER_ERROR("Internal Server Error"));
     });
 };
 
