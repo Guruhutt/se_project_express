@@ -7,7 +7,7 @@ const INTERNAL_SERVER_ERROR = require("../utils/internal_error");
 const UnauthorizedError = require("../utils/unauthorized");
 const CONFLICT = require("../utils/conflict");
 
-const { JWT_SECRET = "dev-secret" } = process.env;
+const { JWT_SECRET } = require("../config");
 
 const getUsers = (req, res, next) => {
   User.find({})

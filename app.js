@@ -6,7 +6,6 @@ const { errors } = require("celebrate");
 const indexRouter = require("./routes/index");
 const { requestLogger, errorLogger } = require("./middleware/logger");
 const NOT_FOUND = require("./utils/not_found");
-const INTERNAL_SERVER_ERROR = require("./utils/internal_error");
 
 const app = express();
 const { PORT = 3001 } = process.env;
@@ -45,18 +44,12 @@ app.use(errors());
 
 // then centralized error handler
 app.use((err, req, res, next) => {
-  console.error(err);
-  const statusCode = err.statusCode || INTERNAL_SERVER_ERROR;
+  const statusCode = err.statusCode || 500;
   const message =
-    statusCode === INTERNAL_SERVER_ERROR
-      ? "An error occurred on the server"
-      : err.message;
+    statusCode === 500 ? "An error occurred on the server" : err.message;
 
-  // This line uses 'next' to satisfy ESLint without actually calling it
-  if (next) {
-    return res.status(statusCode).send({ message });
-  }
-  return res.status(statusCode).send({ message });
+  res.status(statusCode).send({ message });
+  next();
 });
 
 app.listen(PORT, () => {
